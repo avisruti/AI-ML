@@ -1,0 +1,42 @@
+import pandas as pd
+import random
+
+# Sample simulated dataset structure for R12 to Fusion migration predictor
+
+object_types = ['RDF Report', 'PL/SQL Package', 'Form (.fmb)', 'Alert', 'Concurrent Program', 'Workflow', 'XML Publisher']
+modules = ['INV', 'AR', 'AP', 'PO', 'GL', 'HRMS', 'OM']
+
+# Simulate 50 entries
+data = []
+for i in range(50):
+    object_name = f"XX_{random.choice(modules)}_OBJ_{i:03}"
+    object_type = random.choice(object_types)
+    module = random.choice(modules)
+    lines_of_code = random.randint(50, 5000)
+    uses_api = random.choice([0, 1])
+    has_forms_extension = 1 if object_type == 'Form (.fmb)' else 0
+    custom_logic_level = random.choice(['Low', 'Medium', 'High'])
+    
+    # Define feasibility and risk based on heuristics
+    if object_type == 'Form (.fmb)' or custom_logic_level == 'High':
+        feasible = 'No'
+        risk = 'High'
+    elif object_type == 'RDF Report' and custom_logic_level == 'Low':
+        feasible = 'Yes'
+        risk = 'Low'
+    else:
+        feasible = random.choice(['Yes', 'No'])
+        risk = random.choice(['Low', 'Medium', 'High'])
+    
+    data.append([
+        object_name, object_type, module, lines_of_code, uses_api,
+        has_forms_extension, custom_logic_level, feasible, risk
+    ])
+
+columns = [
+    'object_name', 'object_type', 'module', 'lines_of_code', 'uses_api',
+    'has_forms_extension', 'custom_logic_level', 'migration_feasible', 'risk_level'
+]
+
+df = pd.DataFrame(data, columns=columns)
+print(df.head())
